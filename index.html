@@ -49,20 +49,29 @@
     </table>
 
 
-       <script>
+    <script>
         let data = [];
+        let currentPage = 0;
+        const resultsPerPage = 50;
+        let filteredData = []; // Variable para almacenar los datos filtrados
 
+        // Cargar los datos iniciales desde el archivo JSON
         fetch('datos.json')
             .then(response => response.json())
             .then(jsonData => {
                 data = jsonData;
-                populateTable(data);
+                filteredData = data; // Inicialmente, los datos filtrados son todos los datos
+                populateTable();
             });
 
-        function populateTable(data) {
+        // Función para llenar la tabla con los datos actuales
+        function populateTable() {
             const tableBody = document.getElementById('table-body');
             tableBody.innerHTML = '';
-            data.slice(0, 100).forEach(row => {
+            const start = currentPage * resultsPerPage;
+            const end = start + resultsPerPage;
+            const pageData = filteredData.slice(start, end);
+            pageData.forEach(row => {
                 const tr = document.createElement('tr');
                 Object.values(row).forEach(cell => {
                     const td = document.createElement('td');
@@ -71,16 +80,25 @@
                 });
                 tableBody.appendChild(tr);
             });
+            document.getElementById('next-button').style.display = (end >= filteredData.length) ? 'none' : 'block';
         }
 
+        // Función para buscar y filtrar los datos
         function searchTable() {
             const searchTerm = document.getElementById('search').value.toLowerCase();
-            const filteredData = data.filter(row => {
+            filteredData = data.filter(row => {
                 return Object.values(row).some(cell => 
                     cell.toString().toLowerCase().includes(searchTerm)
                 );
             });
-            populateTable(filteredData.slice(0, 100));
+            currentPage = 0; // Reiniciar a la primera página después de buscar
+            populateTable(); // Llenar la tabla con los datos filtrados
+        }
+
+        // Función para mostrar la siguiente página de resultados
+        function showNextPage() {
+            currentPage++;
+            populateTable(); // Llenar la tabla con la siguiente página de datos
         }
     </script>
 </body>
