@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Search Agency's Information</title>
+    <title>Consulta de Datos</title>
     <style>
         table {
             width: 100%;
@@ -14,12 +14,15 @@
             padding: 8px;
             text-align: left;
         }
+        #next-button {
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
-    <h1>Search Agency's Information</h1>
+    <h1>Consulta de Datos</h1>
     <input type="text" id="search" placeholder="Buscar...">
-    <button onclick="searchTable()">Search</button>
+    <button onclick="searchTable()">Buscar</button>
     <table id="data-table">
         <thead>
             <tr>
@@ -33,21 +36,29 @@
             <!-- Aquí se llenarán los datos dinámicamente -->
         </tbody>
     </table>
+    <button id="next-button" onclick="showNextPage()">Mostrar más</button>
 
     <script>
         let data = [];
+        let currentPage = 0;
+        const resultsPerPage = 50;
+        let filteredData = [];
 
         fetch('datos.json')
             .then(response => response.json())
             .then(jsonData => {
                 data = jsonData;
-                populateTable(data);
+                filteredData = data; // Inicialmente, los datos filtrados son todos los datos
+                populateTable();
             });
 
-        function populateTable(data) {
+        function populateTable() {
             const tableBody = document.getElementById('table-body');
             tableBody.innerHTML = '';
-            data.forEach(row => {
+            const start = currentPage * resultsPerPage;
+            const end = start + resultsPerPage;
+            const pageData = filteredData.slice(start, end);
+            pageData.forEach(row => {
                 const tr = document.createElement('tr');
                 Object.values(row).forEach(cell => {
                     const td = document.createElement('td');
@@ -56,16 +67,23 @@
                 });
                 tableBody.appendChild(tr);
             });
+            document.getElementById('next-button').style.display = (end >= filteredData.length) ? 'none' : 'block';
         }
 
         function searchTable() {
             const searchTerm = document.getElementById('search').value.toLowerCase();
-            const filteredData = data.filter(row => {
+            filteredData = data.filter(row => {
                 return Object.values(row).some(cell => 
                     cell.toString().toLowerCase().includes(searchTerm)
                 );
             });
-            populateTable(filteredData);
+            currentPage = 0;
+            populateTable();
+        }
+
+        function showNextPage() {
+            currentPage++;
+            populateTable();
         }
     </script>
 </body>
