@@ -49,27 +49,20 @@
     </table>
     <button id="next-button" onclick="showNextPage()">Mostrar más</button>
 
-    <script>
+       <script>
         let data = [];
-        let currentPage = 0;
-        const resultsPerPage = 50;
-        let filteredData = [];
 
         fetch('datos.json')
             .then(response => response.json())
             .then(jsonData => {
                 data = jsonData;
-                filteredData = data; // Inicialmente, los datos filtrados son todos los datos
-                populateTable();
+                populateTable(data);
             });
 
-        function populateTable() {
+        function populateTable(data) {
             const tableBody = document.getElementById('table-body');
             tableBody.innerHTML = '';
-            const start = currentPage * resultsPerPage;
-            const end = start + resultsPerPage;
-            const pageData = filteredData.slice(start, end);
-            pageData.forEach(row => {
+            data.slice(0, 100).forEach(row => {
                 const tr = document.createElement('tr');
                 Object.values(row).forEach(cell => {
                     const td = document.createElement('td');
@@ -78,23 +71,16 @@
                 });
                 tableBody.appendChild(tr);
             });
-            document.getElementById('next-button').style.display = (end >= filteredData.length) ? 'none' : 'block';
         }
 
         function searchTable() {
             const searchTerm = document.getElementById('search').value.toLowerCase();
-            filteredData = data.filter(row => {
+            const filteredData = data.filter(row => {
                 return Object.values(row).some(cell => 
                     cell.toString().toLowerCase().includes(searchTerm)
                 );
             });
-            currentPage = 0;
-            populateTable();
-        }
-
-        function showNextPage() {
-            currentPage++;
-            populateTable();
+            populateTable(filteredData.slice(0, 100));
         }
     </script>
 </body>
