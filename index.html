@@ -89,7 +89,7 @@
             const searchTerm = document.getElementById('search').value.toLowerCase();
             filteredData = data.filter(row => {
                 return Object.values(row).some(cell => 
-                    cell.toString().toLowerCase().includes(searchTerm)
+                    (typeof cell === 'string' && cell.toLowerCase().includes(searchTerm))
                 );
             });
             currentPage = 0; // Reiniciar a la primera página después de buscar
