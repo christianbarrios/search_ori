@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Consulta de Datos</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <h1>Consulta de Datos</h1>
+    <input type="text" id="search" placeholder="Buscar...">
+    <button onclick="searchTable()">Buscar</button>
+    <table id="data-table">
+        <thead>
+            <tr>
+                <!-- Aquí pones los encabezados de tu tabla -->
+                <th>Columna1</th>
+                <th>Columna2</th>
+                <!-- Agrega más encabezados según tu archivo Excel -->
+            </tr>
+        </thead>
+        <tbody id="table-body">
+            <!-- Aquí se llenarán los datos dinámicamente -->
+        </tbody>
+    </table>
+
+    <script>
+        let data = [];
+
+        fetch('datos.json')
+            .then(response => response.json())
+            .then(jsonData => {
+                data = jsonData;
+                populateTable(data);
+            });
+
+        function populateTable(data) {
+            const tableBody = document.getElementById('table-body');
+            tableBody.innerHTML = '';
+            data.forEach(row => {
+                const tr = document.createElement('tr');
+                Object.values(row).forEach(cell => {
+                    const td = document.createElement('td');
+                    td.textContent = cell;
+                    tr.appendChild(td);
+                });
+                tableBody.appendChild(tr);
+            });
+        }
+
+        function searchTable() {
+            const searchTerm = document.getElementById('search').value.toLowerCase();
+            const filteredData = data.filter(row => {
+                return Object.values(row).some(cell => 
+                    cell.toString().toLowerCase().includes(searchTerm)
+                );
+            });
+            populateTable(filteredData);
+        }
+    </script>
+</body>
+</html>
