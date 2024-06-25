@@ -50,11 +50,12 @@
     
     <button id="next-button" onclick="showNextPage()">Mostrar más</button>
 
-    <script>
+ <script>
         let data = [];
         let currentPage = 0;
         const resultsPerPage = 50;
         let filteredData = []; // Variable para almacenar los datos filtrados
+        const columnsToShow = 13; // Número de columnas a mostrar
 
         // Cargar los datos iniciales desde el archivo JSON
         fetch('datos.json')
@@ -67,16 +68,27 @@
 
         // Función para llenar la tabla con los datos actuales
         function populateTable() {
+            const tableHeaders = document.getElementById('table-headers');
             const tableBody = document.getElementById('table-body');
+            tableHeaders.innerHTML = '';
             tableBody.innerHTML = '';
+
+            // Obtener los nombres de las primeras 13 columnas
+            const headers = Object.keys(filteredData[0]).slice(0, columnsToShow);
+            headers.forEach(header => {
+                const th = document.createElement('th');
+                th.textContent = header;
+                tableHeaders.appendChild(th);
+            });
+
             const start = currentPage * resultsPerPage;
             const end = start + resultsPerPage;
             const pageData = filteredData.slice(start, end);
             pageData.forEach(row => {
                 const tr = document.createElement('tr');
-                Object.values(row).forEach(cell => {
+                headers.forEach(header => {
                     const td = document.createElement('td');
-                    td.textContent = cell;
+                    td.textContent = row[header];
                     tr.appendChild(td);
                 });
                 tableBody.appendChild(tr);
