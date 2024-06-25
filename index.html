@@ -25,29 +25,14 @@
     <button onclick="searchTable()">Buscar</button>
     <table id="data-table">
         <thead>
-            <tr>
-                <!-- Aquí pones los encabezados de tu tabla -->
-                <th>Ori</th>
-                <th>Agency Name</th>
-                <th>Agency Type Name</th>
-                <th>State Name</th>
-                <th>State Abbr</th>
-                <th>Division Name</th>
-                <th>Region Name</th>
-                <th>Region Desc</th>
-                <th>County Name</th>
-                <th>Nibrs</th>
-                <th>Latitude</th>
-                <th>Longitude</th>
-                <th>Nibrs Start Date</th>
-                <!-- Agrega más encabezados según tu archivo Excel -->
+            <tr id="table-headers">
+                <!-- Aquí se llenarán los encabezados de tabla dinámicamente -->
             </tr>
         </thead>
         <tbody id="table-body">
             <!-- Aquí se llenarán los datos dinámicamente -->
         </tbody>
     </table>
-    
     <button id="next-button" onclick="showNextPage()">Mostrar más</button>
 
     <script>
@@ -57,19 +42,29 @@
         let filteredData = []; // Variable para almacenar los datos filtrados
         const columnsToShow = 13; // Número de columnas a mostrar
 
-        // Cargar los datos iniciales desde el archivo JSON
-        fetch('datos.json')
-            .then(response => response.json())
-            .then(jsonData => {
-                data = jsonData;
-                filteredData = data; // Inicialmente, los datos filtrados son todos los datos
-                populateTable();
-            });
+        // Esperar a que se cargue el DOM completamente
+        document.addEventListener('DOMContentLoaded', (event) => {
+            // Cargar los datos iniciales desde el archivo JSON
+            fetch('datos.json')
+                .then(response => response.json())
+                .then(jsonData => {
+                    data = jsonData;
+                    filteredData = data; // Inicialmente, los datos filtrados son todos los datos
+                    populateTable();
+                });
+        });
 
         // Función para llenar la tabla con los datos actuales
         function populateTable() {
             const tableHeaders = document.getElementById('table-headers');
             const tableBody = document.getElementById('table-body');
+            
+            // Verificar si tableHeaders existe antes de manipularlo
+            if (!tableHeaders) {
+                console.error('Elemento table-headers no encontrado.');
+                return;
+            }
+
             tableHeaders.innerHTML = '';
             tableBody.innerHTML = '';
 
@@ -116,3 +111,4 @@
     </script>
 </body>
 </html>
+
