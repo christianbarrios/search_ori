@@ -61,9 +61,9 @@
             return data.map(row => {
                 const convertedRow = {};
                 for (let key in row) {
-                    if (row[key] === "Verdadero") {
+                    if (row[key] === "VERDADERO") {
                         convertedRow[key] = "True";
-                    } else if (row[key] === "Falso") {
+                    } else if (row[key] === "FALSO") {
                         convertedRow[key] = "False";
                     } else {
                         convertedRow[key] = row[key];
