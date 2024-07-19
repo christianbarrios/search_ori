@@ -42,17 +42,36 @@
         let filteredData = []; // Variable para almacenar los datos filtrados
         const columnsToShow = 13; // Número de columnas a mostrar
 
-        // Esperar a que se cargue el DOM completamente
+
+
+       // Esperar a que se cargue el DOM completamente
         document.addEventListener('DOMContentLoaded', (event) => {
             // Cargar los datos iniciales desde el archivo JSON
             fetch('datos.json')
                 .then(response => response.json())
                 .then(jsonData => {
-                    data = jsonData;
+                    data = convertBooleanValues(jsonData); // Convertir valores antes de asignar
                     filteredData = data; // Inicialmente, los datos filtrados son todos los datos
                     populateTable();
                 });
         });
+
+        // Función para convertir "Verdadero" a "True" y "Falso" a "False"
+        function convertBooleanValues(data) {
+            return data.map(row => {
+                const convertedRow = {};
+                for (let key in row) {
+                    if (row[key] === "Verdadero") {
+                        convertedRow[key] = "True";
+                    } else if (row[key] === "Falso") {
+                        convertedRow[key] = "False";
+                    } else {
+                        convertedRow[key] = row[key];
+                    }
+                }
+                return convertedRow;
+            });
+        }        
 
         // Función para llenar la tabla con los datos actuales
         function populateTable() {
