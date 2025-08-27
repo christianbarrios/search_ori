@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
-    <title>Información de Agencias</title>
+    <title>Agency Information</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
@@ -35,8 +35,8 @@
             display: flex;
             justify-content: center;
             margin-bottom: 20px;
-            gap: 10px; /* Espacio entre input y botón */
-            flex-wrap: wrap; /* Permite que los elementos se envuelvan en pantallas pequeñas */
+            gap: 10px;
+            flex-wrap: wrap;
         }
 
         #search {
@@ -44,8 +44,8 @@
             border: 1px solid var(--border-color);
             border-radius: 5px;
             font-size: 1rem;
-            flex-grow: 1; /* Permite que el input ocupe el espacio disponible */
-            max-width: 400px; /* Ancho máximo para el input */
+            flex-grow: 1;
+            max-width: 400px;
         }
 
         .search-container button {
@@ -69,27 +69,26 @@
             margin-top: 20px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             background-color: white;
-            overflow-x: auto; /* Permite scroll horizontal en tablas */
-            display: block; /* Necesario para overflow-x en algunas configuraciones */
+            overflow-x: auto;
+            display: block;
         }
 
         th, td {
             border: 1px solid var(--border-color);
             padding: 12px 15px;
             text-align: left;
-            white-space: nowrap; /* Evita que el texto se rompa en varias líneas */
+            white-space: nowrap;
         }
 
         th {
             background-color: var(--header-bg);
             color: var(--dark-text);
             font-weight: 700;
-            position: sticky; /* Fija los encabezados al hacer scroll horizontal */
-            top: 0; /* Asegura que se queden en la parte superior */
-            z-index: 1; /* Asegura que estén por encima del contenido al hacer scroll */
+            position: sticky;
+            top: 0;
+            z-index: 1;
         }
 
-        /* Estilo para las filas pares/impares para mejor legibilidad */
         tbody tr:nth-child(even) {
             background-color: var(--light-bg);
         }
@@ -120,7 +119,6 @@
             background-color: #5a6268;
         }
 
-        /* Responsive adjustments */
         @media (max-width: 768px) {
             body {
                 padding: 10px;
@@ -132,34 +130,34 @@
             }
 
             .search-container {
-                flex-direction: column; /* Apila input y botón en móviles */
-                align-items: stretch; /* Estira los elementos para ocupar el ancho completo */
+                flex-direction: column;
+                align-items: stretch;
                 gap: 10px;
             }
 
             #search {
-                max-width: 100%; /* Ocupa todo el ancho disponible */
+                max-width: 100%;
             }
 
             .search-container button,
             #next-button {
-                width: 100%; /* Botones de ancho completo */
+                width: 100%;
             }
         }
 
         @media (max-width: 480px) {
             th, td {
-                padding: 8px 10px; /* Reduce el padding en pantallas muy pequeñas */
+                padding: 8px 10px;
                 font-size: 0.9rem;
             }
         }
-    </style>    
+    </style>
 </head>
 <body>
-    <h1>Buscador de Información de Agencias</h1>
+    <h1>Search Agency Information</h1>
     <div class="search-container">
-        <input type="text" id="search" placeholder="Buscar..." oninput="searchTable()">
-        <button onclick="searchTable()">Buscar</button>
+        <input type="text" id="search" placeholder="Search..." oninput="searchTable()">
+        <button onclick="searchTable()">Search</button>
     </div>
     
     <table>
@@ -171,35 +169,32 @@
             </tbody>
     </table>
     <div class="button-container">
-        <button id="next-button" onclick="showNextPage()">Mostrar más</button>
+        <button id="next-button" onclick="showNextPage()">Show more</button>
     </div>
 
     <script>
         let data = [];
         let currentPage = 0;
         const resultsPerPage = 50;
-        let filteredData = []; // Variable para almacenar los datos filtrados
-        const columnsToShow = 10; // Número de columnas a mostrar
+        let filteredData = [];
+        const columnsToShow = 10;
 
-       // Esperar a que se cargue el DOM completamente
         document.addEventListener('DOMContentLoaded', (event) => {
-            // Cargar los datos iniciales desde el archivo JSON
             fetch('datos.json')
                 .then(response => response.json())
                 .then(jsonData => {
-                    data = convertBooleanValues(jsonData); // Convertir valores antes de asignar
-                    filteredData = data; // Inicialmente, los datos filtrados son todos los datos
+                    data = convertBooleanValues(jsonData);
+                    filteredData = data;
                     populateTable();
                 })
-                .catch(error => console.error('Error al cargar el archivo JSON:', error)); // Manejo de errores
+                .catch(error => console.error('Error loading JSON file:', error));
         });
 
-        // Función para convertir "Verdadero" a "True" y "Falso" a "False"
         function convertBooleanValues(data) {
             return data.map(row => {
                 const convertedRow = {};
                 for (let key in row) {
-                    if (row.hasOwnProperty(key)) { // Asegura que la propiedad es propia del objeto
+                    if (row.hasOwnProperty(key)) {
                         if (row[key] === "VERDADERO") {
                             convertedRow[key] = "True";
                         } else if (row[key] === "FALSO") {
@@ -213,17 +208,15 @@
             });
         }        
 
-        // Función para llenar la tabla con los datos actuales
         function populateTable() {
             const tableHeaders = document.getElementById('table-headers');
             const tableBody = document.getElementById('table-body');
             
             if (!tableHeaders || !tableBody) {
-                console.error('Elementos table-headers o table-body no encontrados.');
+                console.error('table-headers or table-body element not found.');
                 return;
             }
 
-            // Solo poblar los encabezados una vez si no hay búsqueda activa
             if (currentPage === 0 && document.getElementById('search').value === '') {
                 tableHeaders.innerHTML = '';
                 if (filteredData.length > 0) {
@@ -242,24 +235,22 @@
             const end = start + resultsPerPage;
             const pageData = filteredData.slice(start, end);
             
-            if (filteredData.length > 0) { // Asegurarse de que haya datos para obtener los encabezados
+            if (filteredData.length > 0) {
                 const headers = Object.keys(filteredData[0]).slice(0, columnsToShow);
                 pageData.forEach(row => {
                     const tr = document.createElement('tr');
                     headers.forEach(header => {
                         const td = document.createElement('td');
-                        td.textContent = row[header] !== undefined ? row[header] : ''; // Manejar valores undefined
+                        td.textContent = row[header] !== undefined ? row[header] : '';
                         tr.appendChild(td);
                     });
                     tableBody.appendChild(tr);
                 });
             }
 
-
             document.getElementById('next-button').style.display = (end >= filteredData.length || filteredData.length === 0) ? 'none' : 'block';
         }
 
-        // Función para buscar y filtrar los datos
         function searchTable() {
             const searchTerm = document.getElementById('search').value.toLowerCase();
             filteredData = data.filter(row => {
@@ -267,14 +258,13 @@
                     (cell !== null && cell !== undefined && String(cell).toLowerCase().includes(searchTerm))
                 );
             });
-            currentPage = 0; // Reiniciar a la primera página después de buscar
-            populateTable(); // Llenar la tabla con los datos filtrados
+            currentPage = 0;
+            populateTable();
         }
 
-        // Función para mostrar la siguiente página de resultados
         function showNextPage() {
             currentPage++;
-            populateTable(); // Llenar la tabla con la siguiente página de datos
+            populateTable();
         }
     </script>
 </body>
