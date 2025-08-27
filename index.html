@@ -147,13 +147,12 @@
                 width: 100%;
             }
 
-            /* --- NEW CSS FOR CARDS --- */
             table, thead, tbody, th, td, tr {
-                display: block; /* Trata cada elemento como un bloque para apilarlos */
+                display: block;
             }
             
             thead tr {
-                position: absolute; /* Oculta los encabezados de forma accesible */
+                position: absolute;
                 top: -9999px;
                 left: -9999px;
             }
@@ -177,7 +176,6 @@
                 text-overflow: clip;
             }
             
-            /* Agrega etiquetas (headers) antes de cada valor */
             td::before {
                 content: attr(data-label);
                 position: absolute;
@@ -223,7 +221,19 @@
         const resultsPerPage = 50;
         let filteredData = [];
         const columnsToShow = 10;
-        let columnLabels = {}; // Nuevo objeto para guardar los nombres de las columnas
+        
+        const columnLabels = {
+            "ori": "ORI",
+            "agency_name": "Name",
+            "agency_type_name": "Agency Type",
+            "state_name": "State",
+            "state_abbr": "State Abbr.",
+            "division_name": "Division",
+            "region_name": "Region",
+            "region_desc": "Region Desc.",
+            "county_name": "County",
+            "nibrs": "NIBRS"
+        };
 
         document.addEventListener('DOMContentLoaded', (event) => {
             fetch('datos.json')
@@ -231,13 +241,6 @@
                 .then(jsonData => {
                     data = convertBooleanValues(jsonData);
                     filteredData = data;
-                    if (filteredData.length > 0) {
-                        // Guarda los nombres de las columnas para usarlos como etiquetas
-                        const headers = Object.keys(filteredData[0]).slice(0, columnsToShow);
-                        headers.forEach(header => {
-                            columnLabels[header] = header;
-                        });
-                    }
                     populateTable();
                 })
                 .catch(error => console.error('Error loading JSON file:', error));
@@ -276,7 +279,7 @@
                     const headers = Object.keys(filteredData[0]).slice(0, columnsToShow);
                     headers.forEach(header => {
                         const th = document.createElement('th');
-                        th.textContent = header;
+                        th.textContent = columnLabels[header] || header;
                         tableHeaders.appendChild(th);
                     });
                 }
@@ -295,8 +298,7 @@
                     headers.forEach(header => {
                         const td = document.createElement('td');
                         td.textContent = row[header] !== undefined ? row[header] : '';
-                        // Agrega el atributo data-label para usarlo en el CSS
-                        td.setAttribute('data-label', columnLabels[header]);
+                        td.setAttribute('data-label', columnLabels[header] || header);
                         tr.appendChild(td);
                     });
                     tableBody.appendChild(tr);
