@@ -34,7 +34,7 @@ This project is a simple web application designed to **search and filter agency 
 ## 🌐 Live Demo
 
 You can view a live version of this project on GitHub Pages at:
-`[https://christianbarrios.github.io/search_ori/]`
+[https://christianbarrios.github.io/search_ori/](https://christianbarrios.github.io/search_ori/)
 
 
 -----
