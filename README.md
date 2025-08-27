@@ -1,5 +1,3 @@
-### README.md
-
 # Agency Information Search
 
 This project is a simple web application designed to **search and filter agency information** from a JSON data source. It's a single-page application hosted on **GitHub Pages**, demonstrating a basic frontend-only solution without a backend.
