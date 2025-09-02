@@ -425,42 +425,42 @@
 
         // ===== Modal logic — NEW =====
         function openModal(row) {
-            const modal = document.getElementById('detail-modal');
-            const content = document.getElementById('modal-content');
-            const title = document.getElementById('modal-title');
-
-            // Elegí un título útil (si existe), sino fallback
-            const candidateTitle = row.agency_name || row.name || row.ori || 'Details';
-            title.textContent = candidateTitle;
-
-            // Armamos grilla de pares etiqueta/valor con TODOS los campos
-            content.innerHTML = '';
-            const keys = Object.keys(row);
-
-            // Opcional: ordenar claves dejando algunas primero
-            const preferredOrder = ['agency_name','ori','agency_type_name','state_name','state_abbr','division_name','region_name','region_desc','county_name','nibrs'];
-            const ordered = [
-                ...preferredOrder.filter(k => keys.includes(k)),
-                ...keys.filter(k => !preferredOrder.includes(k))
-            ];
-
-            ordered.forEach(key => {
-                const label = document.createElement('div');
-                label.className = 'kv-label';
-                label.textContent = columnLabels[key] || key;
-
-                const value = document.createElement('div');
-                value.className = 'kv-value';
-                const v = row[key];
-                value.textContent = (v === null || v === undefined) ? '' : String(v);
-
-                content.appendChild(label);
-                content.appendChild(value);
-            });
-
-            modal.classList.add('open');
-            modal.setAttribute('aria-hidden', 'false');
-        }
+              const modal = document.getElementById('detail-modal');
+              const content = document.getElementById('modal-content');
+              const title = document.getElementById('modal-title');
+        
+              // Tomamos las mismas 10 primeras columnas que usa la tabla
+              const keysToShow = (filteredData.length > 0)
+                  ? Object.keys(filteredData[0]).slice(0, columnsToShow)
+                  : Object.keys(row).slice(0, columnsToShow);
+        
+              // Título útil (si existe), o caemos al primer campo visible
+              const candidateTitle =
+                  row.agency_name ??
+                  row.ori ??
+                  row[keysToShow[0]] ??
+                  'Details';
+              title.textContent = String(candidateTitle);
+        
+              // Limpiamos y armamos la grilla sólo con esas 10 columnas
+              content.innerHTML = '';
+              keysToShow.forEach(key => {
+                  const label = document.createElement('div');
+                  label.className = 'kv-label';
+                  label.textContent = columnLabels[key] || key;
+        
+                  const value = document.createElement('div');
+                  value.className = 'kv-value';
+                  const v = row[key];
+                  value.textContent = (v === null || v === undefined) ? '' : String(v);
+        
+                  content.appendChild(label);
+                  content.appendChild(value);
+              });
+        
+              modal.classList.add('open');
+              modal.setAttribute('aria-hidden', 'false');
+          }
 
         function closeModal() {
             const modal = document.getElementById('detail-modal');
